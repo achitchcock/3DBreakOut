@@ -16,14 +16,14 @@ public class createWorld : MonoBehaviour {
             for (int j = 1; j < 20; j+=2)
             {
                 //back and front
-                //createBlock(i,j,-11);
-                //createBlock(i, j, 11);
+                createBlock(i,j,-11);
+                createBlock(i, j, 11);
                 //left and right
                 createBlock(-11, j, i);
                 createBlock(11, j, i);
                 //top and bottom
-                //createBlock(j-10, 21, i);
-               // createBlock(j-10, -1, i);
+                createBlock(j-10, 21, i);
+                createBlock(j-10, -1, i);
             }
         }
     }
