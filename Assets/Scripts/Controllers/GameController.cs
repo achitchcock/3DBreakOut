@@ -21,11 +21,12 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		UpdateUI();	
+		currentGame.Update();
 	}
 
 	void UpdateUI() {
 		int seconds = currentGame.RemainSeconds();
 		timeText.text = string.Format("{0:D2}:{1:D2}", seconds / 60, seconds % 60);
-		scoreText.text = currentGame.CurrentScore().ToString("D3");
+		scoreText.text = string.Format("Score: {0:D3}", currentGame.CurrentScore());
 	}
 }

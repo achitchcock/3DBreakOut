@@ -6,7 +6,8 @@ public class Wall : MonoBehaviour {
 	float brickScale;
 	float brickInterval;
 	public GameObject backSurface;
-	private List<Brick> bricks;
+	public Room room;
+	private List<Brick> bricks = new List<Brick>();
 
 	// Use this for initialization
 	void Start () {
@@ -17,7 +18,7 @@ public class Wall : MonoBehaviour {
 		float scaleY = backSurface.transform.localScale.y;
 		float scaleX = backSurface.transform.localScale.x;
 		brickScale = 1.0f;
-		brickInterval = 0.35f;
+		brickInterval = 0.7f;
 		float step = brickScale + brickInterval;
 		for(float xOffset = -0.5f * scaleX + 0.5f * step; xOffset <= 0.5f * scaleX - 0.5f * step; xOffset += step) {
 			for(float yOffset = -0.5f * scaleY + 0.5f * step; yOffset <= 0.5f * scaleY - 0.5f * step; yOffset += step) {
@@ -27,6 +28,7 @@ public class Wall : MonoBehaviour {
 				brickObject.transform.localPosition = new Vector3(xOffset, yOffset, 0);
 				Brick brick = brickObject.AddComponent<Brick>();
 				bricks.Add(brick);
+				brick.room = room;
 			}
 		}
 	}

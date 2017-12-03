@@ -10,7 +10,9 @@ public class Room : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		foreach(Wall wall in walls) {
+			wall.room = this;
+		}	
 	}
 	
 	// Update is called once per frame

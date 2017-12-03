@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BrickGame : MonoBehaviour {
+public class BrickGame {
 	float remainTime;
 	int score;
 	public Room gameRoom;
 
-	// Use this for initialization
-	void Start () {
-		Debug.Assert(gameRoom != null);		
-	}
-	
 	// Update is called once per frame
-	void Update () {
+	public void Update () {
 		remainTime -= Time.deltaTime;
 		if (remainTime < 0) {
 			remainTime = 0.0f;
