@@ -78,11 +78,11 @@ public class HierarchyControl : MonoBehaviour {
 
                 // calculate hierarchy positions
                 shoulderPivot.localPosition = shoulder.transform.localPosition;
-                shoulderPivot.transform.up = -calculateOffset(shoulder.transform.localPosition, elbow.transform.localPosition).normalized;
+                shoulderPivot.transform.up = calculateOffset(shoulder.transform.localPosition, elbow.transform.localPosition).normalized;
                 elbowPivot.localPosition = shoulderPivot.transform.InverseTransformPoint(elbow.transform.position);  
-                elbowPivot.transform.up = -calculateOffset(elbow.transform.localPosition, wrist.transform.localPosition).normalized;
+                elbowPivot.transform.up = calculateOffset(elbow.transform.localPosition, wrist.transform.localPosition).normalized;
                 wristPivot.localPosition = elbowPivot.transform.InverseTransformPoint(wrist.transform.position);
-                wristPivot.transform.up = -calculateOffset(wrist.transform.localPosition, handTip.transform.localPosition).normalized;
+                wristPivot.transform.up = calculateOffset(wrist.transform.localPosition, handTip.transform.localPosition).normalized;
                 handPivot.localPosition = wristPivot.transform.InverseTransformPoint(handTip.transform.position);
 
 
@@ -92,7 +92,7 @@ public class HierarchyControl : MonoBehaviour {
                 foreArm.transform.localScale = new Vector3(1,wristPivot.transform.localPosition.magnitude/2, 1);
                 foreArm.GetComponent<NodePrimitive>().Pivot.y = wristPivot.transform.localPosition.magnitude / 4;
                 hand.transform.localScale = new Vector3(1, handPivot.transform.localPosition.magnitude/2, 1);
-                hand.GetComponent<NodePrimitive>().Pivot.y = handPivot.transform.localPosition.magnitude / 2;
+                hand.GetComponent<NodePrimitive>().Pivot.y = handPivot.transform.localPosition.magnitude / 4;
 
                 // move Hierarchy to final position
                 shoulderPivot.localPosition = rootPosition;
@@ -106,13 +106,9 @@ public class HierarchyControl : MonoBehaviour {
     Vector3 calculateOffset(Vector3 parent, Vector3 child)
     {
         Vector3 res = new Vector3();
-        res.x = child.x - parent.x;
-        res.y = child.y - parent.y;
-        res.z = child.z - parent.z;
-
-
-
-
+        res.x = parent.x - child.x;
+        res.y = parent.y - child.y;
+        res.z = parent.z - child.z;
         return res;
     }
 
