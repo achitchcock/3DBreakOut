@@ -24,7 +24,7 @@ public class BrickGame {
 
 	public void InitGame(Room room) {
 		gameRoom = room;
-		gameRoom.brickDidHitHandler = HitBrick;
+		gameRoom.brickDidHitHandler = HitBrickHandler;
 		score = 0;
 		remainTime = 120.0f;
 	}
@@ -40,7 +40,7 @@ public class BrickGame {
 
 	}
 
-	public void HitBrick() {
+	public void HitBrickHandler() {
 		score += 1;
 	}
 

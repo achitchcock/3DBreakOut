@@ -11,7 +11,7 @@ public class Wall : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		InitializeBricks(20, 20);
+		
 	}
 
 	public void InitializeBricks(int row, int cols) {
@@ -29,6 +29,9 @@ public class Wall : MonoBehaviour {
 				Brick brick = brickObject.AddComponent<Brick>();
 				bricks.Add(brick);
 				brick.room = room;
+				BoxCollider coll = brickObject.GetComponent<BoxCollider>();
+				coll.size = new Vector3(step * 1.22119f, step * 1.216303f, step * 1.124114f);
+				coll.center = new Vector3(0, step * 0.6093565f, 0);
 			}
 		}
 	}
