@@ -68,8 +68,6 @@ public class HierarchyControl : MonoBehaviour {
 
             if (body.IsTracked)
             {
-                //print("Tracked!");
-                
                 // store values read from kinect
                 shoulder.transform.localPosition = GetVector3FromJoint(body.Joints[Kinect.JointType.ShoulderRight]);
                 elbow.transform.localPosition = GetVector3FromJoint( body.Joints[Kinect.JointType.ElbowRight]);
@@ -102,7 +100,7 @@ public class HierarchyControl : MonoBehaviour {
         }
     }
 
-
+    // potentially unnecessary...
     Vector3 calculateOffset(Vector3 parent, Vector3 child)
     {
         Vector3 res = new Vector3();
@@ -118,6 +116,7 @@ public class HierarchyControl : MonoBehaviour {
         return new Vector3(joint.Position.X  , joint.Position.Y, -joint.Position.Z ) * 20;
     }
 
+    // not using
     void drawArmSegment(Vector3 start, Vector3 end)
     {
         float length = (end - start).magnitude;
