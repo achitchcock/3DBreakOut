@@ -25,7 +25,7 @@ public class Wall : MonoBehaviour {
 				GameObject brickObject = (GameObject)Instantiate(Resources.Load("WoodenCrate/Prefab/WoodenBrick"));
 				brickObject.transform.parent = transform;
 				brickObject.transform.localScale = new Vector3(brickScale, brickScale, brickScale);
-				brickObject.transform.localPosition = new Vector3(xOffset, yOffset, 0);
+				brickObject.transform.localPosition = new Vector3(xOffset, yOffset, -0.6f);
 				Brick brick = brickObject.AddComponent<Brick>();
 				bricks.Add(brick);
 				brick.room = room;
@@ -34,6 +34,12 @@ public class Wall : MonoBehaviour {
 				coll.center = new Vector3(0, step * 0.6093565f, 0);
 			}
 		}
+		foreach(Brick brick in bricks) {
+			if (Random.Range(0, 10) == 1) {
+				brick.SetPowerUp();
+			}
+		}
+		
 	}
 		
 	// Update is called once per frame

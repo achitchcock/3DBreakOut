@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour {
 	bool hitted = true;
+	bool isPowerup = false;
+
+	GameObject particle;
 	public Room room;
 	// Use this for initialization
 	void Start () {
@@ -20,11 +23,20 @@ public class Brick : MonoBehaviour {
 
 		Vector3 position = transform.localPosition;
 		if (hit) {
-			position.z = 0;
+			gameObject.SetActive(false);
+			//position.z = 0;
 			room.HitBrick();
+			if (particle != null) {
+				Destroy(particle);
+			}
+			particle = (GameObject)Instantiate(Resources.Load("Particle_Dissolve_Shader/Prefabs/Explosion loop mobile"));
+			particle.transform.position = transform.position;
+			particle.GetComponent<ParticleSystem>().Play();
+			Invoke("StopParticle", 1.0f);
 		}
 		else {
-			position.z = -1.2f * transform.localScale.x;
+			gameObject.SetActive(true);
+			position.z = -0.6f * transform.localScale.x;
 		}
 		transform.localPosition = position;
 		hitted = hit;
@@ -38,5 +50,16 @@ public class Brick : MonoBehaviour {
 
 	public bool IsHit() {
 		return hitted;
+	}
+
+	public void StopParticle() {
+		Destroy(particle);
+	}
+
+	public void SetPowerUp() {
+		isPowerup = true;
+		particle = (GameObject)Instantiate(Resources.Load("Particle_Dissolve_Shader/Prefabs/Soul mobile"));
+		particle.transform.position = transform.position - transform.localToWorldMatrix.MultiplyPoint(transform.forward).normalized * 0.6f;
+		particle.GetComponent<ParticleSystem>().Play();	
 	}
 }
