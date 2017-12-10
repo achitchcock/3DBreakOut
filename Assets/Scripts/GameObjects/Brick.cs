@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour {
 	bool hitted = true;
-	bool isPowerup = false;
-
+	public bool isPowerup = false;
+	public bool isBomb = false;
 	GameObject particle;
-	public Room room;
+	public Wall wall;
 	// Use this for initialization
 	void Start () {
 		SetHit(false);
@@ -18,21 +18,26 @@ public class Brick : MonoBehaviour {
 		
 	}
 
-	void SetHit(bool hit) {
+	public void PlayExplosion() {
+		if (particle != null) {
+				Destroy(particle);
+			}
+		particle = (GameObject)Instantiate(Resources.Load("Particle_Dissolve_Shader/Prefabs/Explosion loop mobile"));
+		particle.transform.position = transform.position;
+		particle.GetComponent<ParticleSystem>().Play();
+		Invoke("StopParticle", 1.0f);
+	}
+	public void SetHit(bool hit, bool passive = false) {
 		if (hit == hitted) { return; }
 
 		Vector3 position = transform.localPosition;
 		if (hit) {
 			gameObject.SetActive(false);
 			//position.z = 0;
-			room.HitBrick();
-			if (particle != null) {
-				Destroy(particle);
+			if (!passive) {
+				wall.room.HitBrick(this);
 			}
-			particle = (GameObject)Instantiate(Resources.Load("Particle_Dissolve_Shader/Prefabs/Explosion loop mobile"));
-			particle.transform.position = transform.position;
-			particle.GetComponent<ParticleSystem>().Play();
-			Invoke("StopParticle", 1.0f);
+			PlayExplosion();
 		}
 		else {
 			gameObject.SetActive(true);
@@ -59,6 +64,13 @@ public class Brick : MonoBehaviour {
 	public void SetPowerUp() {
 		isPowerup = true;
 		particle = (GameObject)Instantiate(Resources.Load("Particle_Dissolve_Shader/Prefabs/Soul mobile"));
+		particle.transform.position = transform.position - transform.localToWorldMatrix.MultiplyPoint(transform.forward).normalized * 0.6f;
+		particle.GetComponent<ParticleSystem>().Play();	
+	}
+
+	public void SetBomb() {
+		isBomb = true;
+		particle = (GameObject)Instantiate(Resources.Load("Particle_Dissolve_Shader/Prefabs/Fire fuel fallback"));
 		particle.transform.position = transform.position - transform.localToWorldMatrix.MultiplyPoint(transform.forward).normalized * 0.6f;
 		particle.GetComponent<ParticleSystem>().Play();	
 	}
