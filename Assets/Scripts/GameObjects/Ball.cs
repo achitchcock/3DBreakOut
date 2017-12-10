@@ -35,4 +35,9 @@ public class Ball : MonoBehaviour {
 		rb.velocity = transform.forward * speed;
 		running = true;
 	}
+
+	public void Zoom(float scale = 1.0f) {
+		transform.localScale = new Vector3(scale, scale, scale);
+		GetComponent<SphereCollider>().radius = 0.5f * scale;
+	}
 }

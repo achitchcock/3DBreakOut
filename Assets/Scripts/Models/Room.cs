@@ -5,9 +5,9 @@ public class Room : MonoBehaviour {
 	public Wall[] walls;
 	public Ball[] balls; 
 
-	public delegate void RoomCallback();
+	public delegate void RoomBrickCallback();
 	public delegate void RoomBallCallback(Ball ball);
-	public RoomCallback brickDidHitHandler;
+	public RoomBrickCallback brickDidHitHandler;
 	public RoomBallCallback ballDidResetHandler;
     public GameObject handTip;
     public HierarchyControl hControl;
@@ -39,12 +39,56 @@ public class Room : MonoBehaviour {
 		return count;
 	}
 
-	public void HitBrick() {
+	public void HitBrick(Brick brick) {
 		if (brickDidHitHandler != null) {
+			if (brick.isPowerup) {
+				if (Random.Range(0, 2) <= 1) {
+					PowerUpBalls();
+					Invoke("ResetBalls", 10);
+				}
+				else {
+					AddBall();
+					Invoke("RemoveBall", 10);
+				}
+			}
+			else if (brick.isBomb) {
+				brick.wall.HitAllBricks();
+			}
 			brickDidHitHandler();
 		}
 	}
 
+	void PowerUpBalls() {
+		foreach(Ball ball in balls) {
+			ball.Zoom(5.0f);
+		}
+	}
+
+	void ResetBalls() {
+		foreach(Ball ball in balls) {
+			ball.Zoom(1.0f);
+		}
+	}
+
+	void AddBall() {
+		GameObject newBall = Instantiate(balls[0].gameObject);
+		List<Ball> newBalls = new List<Ball>();
+		newBalls.AddRange(balls);
+		newBalls.Add(newBall.GetComponent<Ball>());
+		balls = newBalls.ToArray();
+
+		ballDidResetHandler(balls[balls.Length - 1]);
+		ResetBall(balls[balls.Length - 1]);
+	}
+
+	void RemoveBall() {
+		List<Ball> newBalls = new List<Ball>();
+		newBalls.AddRange(balls);
+		newBalls.RemoveAt(balls.Length - 1);
+
+		Destroy(balls[balls.Length - 1].gameObject);
+		balls = newBalls.ToArray();
+	}
 	public void BallStop(Ball ball) {
 		if (ballDidResetHandler != null) {
 			ballDidResetHandler(ball);

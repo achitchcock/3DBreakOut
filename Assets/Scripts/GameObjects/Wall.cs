@@ -28,15 +28,24 @@ public class Wall : MonoBehaviour {
 				brickObject.transform.localPosition = new Vector3(xOffset, yOffset, -0.6f);
 				Brick brick = brickObject.AddComponent<Brick>();
 				bricks.Add(brick);
-				brick.room = room;
+				brick.wall = this;
 				BoxCollider coll = brickObject.GetComponent<BoxCollider>();
 				coll.size = new Vector3(step * 1.22119f, step * 1.216303f, step * 1.124114f);
 				coll.center = new Vector3(0, step * 0.6093565f, 0);
 			}
 		}
-		foreach(Brick brick in bricks) {
-			if (Random.Range(0, 10) == 1) {
+
+		int powerups = 5;
+		int bomb = 2;
+		for(int i = 0; i < bricks.Count; i++) {
+			Brick brick = bricks[i];
+			if (i % 10 == 0 && powerups > 0) {
 				brick.SetPowerUp();
+				powerups --;
+			}
+			else if (i % 10 == 5 && bomb > 0) {
+				brick.SetBomb();
+				bomb --;
 			}
 		}
 		
@@ -55,5 +64,13 @@ public class Wall : MonoBehaviour {
 			}
 		}
 		return count;
+	}
+
+	public void HitAllBricks() {
+		foreach(Brick b in bricks) {
+			if (!b.IsHit()) {
+				b.SetHit(true, true);
+			}
+		}	
 	}
 }
