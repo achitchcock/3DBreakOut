@@ -55,7 +55,7 @@ public class Room : MonoBehaviour {
 
 	void PowerUpBalls() {
 		foreach(Ball ball in balls) {
-			ball.Zoom(5.0f);
+			ball.Zoom(2.8f);
 		}
 	}
 
