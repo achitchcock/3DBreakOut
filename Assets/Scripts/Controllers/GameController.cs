@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Windows.Kinect;
 
 public class GameController : MonoBehaviour {
 	public Room gameRoom;
 	public Text scoreText;
 	public Text timeText;
 	BrickGame currentGame;
+    public GameObject hand;
 
 	List<Ball> ballsToFire = new List<Ball>();
 	// Use this for initialization
@@ -16,7 +18,11 @@ public class GameController : MonoBehaviour {
 		currentGame.InitGame(gameRoom);
 		currentGame.StartGame();
 		
-		ballsToFire.Add(gameRoom.balls[0]);
+		
+        foreach(Ball ball in gameRoom.balls)
+        {
+            ballsToFire.Add(ball);
+        }
 
 		gameRoom.ballDidResetHandler = delegate (Ball ball) {
 			ballsToFire.Add(ball);
@@ -28,8 +34,14 @@ public class GameController : MonoBehaviour {
 	void Update () {
 		UpdateUI();	
 		currentGame.Update();
-
-		if (Input.GetKey(KeyCode.Space) && ballsToFire.Count > 0) {
+        if (ballsToFire.Count != 0 && hand.GetComponent<HierarchyControl>().handOpen != HandState.Open)
+        {
+            foreach (Ball ball in ballsToFire)
+            {
+                gameRoom.ResetBall(ball);
+            }
+        }
+		if ((Input.GetKey(KeyCode.Space) || hand.GetComponent<HierarchyControl>().handOpen==HandState.Open) && ballsToFire.Count > 0) {
 			ballsToFire[0].Fire();
 			ballsToFire.RemoveAt(0);
 		}
@@ -70,8 +82,12 @@ public class GameController : MonoBehaviour {
 			angles.y = -40.0f;
 		}
 		Camera.main.transform.eulerAngles = angles;
-		gameRoom.ResetBall(ballsToFire[0]);
-	}
+        if (ballsToFire.Count != 0)
+        {
+            gameRoom.ResetBall(ballsToFire[0]);
+
+        }
+    }
 	void UpdateUI() {
 		int seconds = currentGame.RemainSeconds();
 		timeText.text = string.Format("Time: {0:D2}:{1:D2}", seconds / 60, seconds % 60);

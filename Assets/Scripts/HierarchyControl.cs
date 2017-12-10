@@ -14,6 +14,8 @@ public class HierarchyControl : MonoBehaviour {
     GameObject wrist;
     GameObject handTip;
 
+    
+
     public NodePrimitive upperArm;
     public NodePrimitive foreArm;
     public NodePrimitive hand;
@@ -24,6 +26,9 @@ public class HierarchyControl : MonoBehaviour {
     public Transform handPivot;
 
     public Vector3 rootPosition;
+
+    public Kinect.HandState handOpen;
+    public Quaternion dir;
 
     private Dictionary<ulong, GameObject> _Bodies = new Dictionary<ulong, GameObject>();
     private BodySourceManager _BodyManager;
@@ -90,12 +95,26 @@ public class HierarchyControl : MonoBehaviour {
                 foreArm.transform.localScale = new Vector3(1,wristPivot.transform.localPosition.magnitude/2, 1);
                 foreArm.GetComponent<NodePrimitive>().Pivot.y = wristPivot.transform.localPosition.magnitude / 4;
                 hand.transform.localScale = new Vector3(1, handPivot.transform.localPosition.magnitude/2, 1);
-                hand.GetComponent<NodePrimitive>().Pivot.y = handPivot.transform.localPosition.magnitude / 4;
+                hand.GetComponent<NodePrimitive>().Pivot.y = handPivot.transform.localPosition.magnitude / 2;
 
                 // move Hierarchy to final position
-                shoulderPivot.localPosition = rootPosition;
-                //shoulderPivot.localRotation = // camera's rotation?
+                Vector3 cp = Camera.main.transform.localPosition;
+                cp += Camera.main.transform.right * 5;
+                cp += Camera.main.transform.forward * 5;
+                //cp.x -= 5;
+                //cp.y -= 5;
+                Quaternion rot = Camera.main.transform.localRotation;
+                shoulderPivot.localPosition = cp;
+                //shoulderPivot.localRotation = rot;
 
+                //shoulderPivot.localRotation = // camera's rotation?
+                handOpen = body.HandRightState;
+                Kinect.Vector4 handDir = body.JointOrientations[Kinect.JointType.HandRight].Orientation;
+                dir = new Quaternion();
+                dir.x = handDir.X;
+                dir.y = handDir.Y;
+                dir.z = handDir.Z;
+                dir.w = handDir.W;
             }
         }
     }
@@ -113,7 +132,7 @@ public class HierarchyControl : MonoBehaviour {
     public Vector3 GetVector3FromJoint(Kinect.Joint joint)
     {
         //  negative z value to make movement not mirrored
-        return new Vector3(joint.Position.X  , joint.Position.Y, -joint.Position.Z ) * 20;
+        return new Vector3(joint.Position.X  , joint.Position.Y, -joint.Position.Z ) * 15;
     }
 
     // not using

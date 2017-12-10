@@ -9,10 +9,15 @@ public class Room : MonoBehaviour {
 	public delegate void RoomBallCallback(Ball ball);
 	public RoomCallback brickDidHitHandler;
 	public RoomBallCallback ballDidResetHandler;
+    public GameObject handTip;
+    public HierarchyControl hControl;
+    GameObject pointer;
+    
 
 	// Use this for initialization
 	void Awake () {
-		foreach(Wall wall in walls) {
+        //pointer = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        foreach (Wall wall in walls) {
 			wall.room = this;
 			wall.InitializeBricks(20, 20);
 		}	
@@ -47,10 +52,16 @@ public class Room : MonoBehaviour {
 		ResetBall(ball);
 	}
 	public void ResetBall(Ball ball) {
-		// reset ball position
-		Vector3 cameraPos = Camera.main.transform.position;
-		cameraPos += Camera.main.transform.forward * 2;
-		ball.transform.position = cameraPos;
-		ball.transform.rotation = Camera.main.transform.rotation;// Quaternion.Euler(Random.Range(-60, 60), Random.Range(-30,30), 0);
+        // reset ball position
+        //Vector3 cameraPos = Camera.main.transform.position;
+        Vector3 handPos = handTip.transform.TransformPoint(handTip.transform.localPosition);
+        //cameraPos += Camera.main.transform.forward * 2;
+		ball.transform.position = handPos + ball.transform.forward;
+        //Quaternion rot = Quaternion.LookRotation(hControl.wristPivot.forward);
+        //rot.eulerAngles = -handTip.transform.TransformDirection(handTip.transform.localRotation.eulerAngles);
+        //pointer.transform.rotation = hControl.dir;
+        //pointer.transform.localScale = new Vector3(0.5f, 4, 0.5f);
+        //pointer.transform.localPosition = handPos;
+        ball.transform.rotation = hControl.dir; //Camera.main.transform.rotation;// Quaternion.Euler(Random.Range(-60, 60), Random.Range(-30,30), 0);
 	}
 }
