@@ -14,7 +14,11 @@ public class TrackingCamera : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Vector3 dir = trackedObj.GetComponent<Rigidbody>().velocity.normalized;
-		transform.rotation = Quaternion.LookRotation(dir);
-		transform.position = trackedObj.transform.position - dir * 2.5f;
+        if (dir != Vector3.zero)
+        {
+            transform.rotation = Quaternion.LookRotation(dir);
+            transform.position = trackedObj.transform.position - dir * 2.5f;
+        }
+		
 	}
 }

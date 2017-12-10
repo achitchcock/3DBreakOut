@@ -16,8 +16,8 @@ public class Ball : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		bool moving = rb.velocity.magnitude > 0.5f; 
-		if (running && !moving) {
+		bool moving = rb.velocity.magnitude > 1.0f; 
+		if (running && !moving || Vector3.Distance(transform.localPosition, new Vector3(0,0,0))>12) {
 			room.BallStop(this);
 			Reset();
 		}
@@ -30,7 +30,7 @@ public class Ball : MonoBehaviour {
 		rb.isKinematic = true;
 	}
 
-	public void Fire(float speed = 20.0f) {
+	public void Fire(float speed = 15.0f) {
 		rb.isKinematic = false;
 		rb.velocity = transform.forward * speed;
 		running = true;
