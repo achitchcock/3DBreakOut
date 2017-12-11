@@ -19,9 +19,7 @@ public class Brick : MonoBehaviour {
 	}
 
 	public void PlayExplosion() {
-		if (particle != null) {
-				Destroy(particle);
-			}
+
 		particle = (GameObject)Instantiate(Resources.Load("Particle_Dissolve_Shader/Prefabs/Explosion loop mobile"));
 		particle.transform.position = transform.position;
 		particle.GetComponent<ParticleSystem>().Play();
@@ -33,11 +31,21 @@ public class Brick : MonoBehaviour {
 		Vector3 position = transform.localPosition;
 		if (hit) {
 			gameObject.SetActive(false);
-			//position.z = 0;
-			if (!passive) {
+            //position.z = 0;
+            if (particle != null)
+            {
+                Destroy(particle);
+            }
+            if (!passive) {
 				wall.room.HitBrick(this);
-			}
-			PlayExplosion();
+                wall.room.GetComponent<AudioSource>().Play();
+            }
+            PlayExplosion();
+            if (isBomb)
+            {
+                print("bomb Block Hit:"+this.wall.ToString());
+            }
+            
 		}
 		else {
 			gameObject.SetActive(true);

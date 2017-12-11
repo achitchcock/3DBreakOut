@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BrickGame {
-	float remainTime;
+	public float remainTime;
 	int score;
 	public Room gameRoom;
 
@@ -15,7 +15,8 @@ public class BrickGame {
 		}
 
 		if (gameRoom.ReaminBricks() == 0) {
-			GameOver();
+            resetBricks();
+            
 		}	
 		else if (remainTime <= 0) {
 			GameOver();
@@ -37,10 +38,22 @@ public class BrickGame {
 	}
 
 	void GameOver() {
+        
+    }
 
-	}
+    void resetBricks()
+    {
+        foreach (Wall w in gameRoom.walls)
+        {
+            foreach (Brick b in w.bricks)
+            {
+                b.GetComponent<Brick>().SetHit(false);
+            }
+        }
+    }
 
-	public void HitBrickHandler() {
+
+    public void HitBrickHandler() {
 		score += 1;
 	}
 

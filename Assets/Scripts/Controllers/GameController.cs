@@ -8,12 +8,17 @@ public class GameController : MonoBehaviour {
 	public Room gameRoom;
 	public Text scoreText;
 	public Text timeText;
+    public Text countDown;
 	BrickGame currentGame;
     public GameObject hand;
+    private float initTime;
 
 	List<Ball> ballsToFire = new List<Ball>();
 	// Use this for initialization
 	void Start () {
+
+        initTime = 5;
+        countDown.text = ((int)initTime).ToString()+":00";
 		currentGame = new BrickGame();
 		currentGame.InitGame(gameRoom);
 		currentGame.StartGame();
@@ -27,13 +32,36 @@ public class GameController : MonoBehaviour {
 		gameRoom.ballDidResetHandler = delegate (Ball ball) {
 			ballsToFire.Add(ball);
 		};
-		UpdateUI();
+        gameRoom.ballDidDestroyHandler = delegate (Ball ball)
+        {
+            ballsToFire.Remove(ball);
+        };
+
+        UpdateUI();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		UpdateUI();	
-		currentGame.Update();
+
+        initTime -= Time.deltaTime;
+        countDown.text = ((int)initTime).ToString() + ":"+ ((int)((initTime-(int)initTime)*100)).ToString();
+        if(currentGame.remainTime <= 0)
+        {
+            countDown.transform.gameObject.SetActive(true);
+            countDown.text = "GAME\nOVER";
+            return;
+        }
+        if(initTime < 0)
+        {
+            countDown.transform.gameObject.SetActive(false);
+        }
+        else
+        {
+            return;
+        }
+
+        currentGame.Update();
         if (ballsToFire.Count != 0 && hand.GetComponent<HierarchyControl>().handOpen != HandState.Open)
         {
             foreach (Ball ball in ballsToFire)
@@ -41,7 +69,7 @@ public class GameController : MonoBehaviour {
                 gameRoom.ResetBall(ball);
             }
         }
-		if ((Input.GetKey(KeyCode.Space) || hand.GetComponent<HierarchyControl>().handOpen==HandState.Open) && ballsToFire.Count > 0) {
+		if ((Input.GetKey(KeyCode.Space) || hand.GetComponent<HierarchyControl>().handOpen!=HandState.Closed) && ballsToFire.Count > 0) {
 			ballsToFire[0].Fire();
 			ballsToFire.RemoveAt(0);
 		}

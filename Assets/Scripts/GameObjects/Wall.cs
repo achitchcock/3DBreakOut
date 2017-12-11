@@ -7,7 +7,7 @@ public class Wall : MonoBehaviour {
 	float brickInterval;
 	public GameObject backSurface;
 	public Room room;
-	private List<Brick> bricks = new List<Brick>();
+	public List<Brick> bricks = new List<Brick>();
 
 	// Use this for initialization
 	void Start () {
@@ -39,11 +39,11 @@ public class Wall : MonoBehaviour {
 		int bomb = 2;
 		for(int i = 0; i < bricks.Count; i++) {
 			Brick brick = bricks[i];
-			if (i % 10 == 0 && powerups > 0) {
+			if (i % 10 == 7 && powerups > 0) {
 				brick.SetPowerUp();
 				powerups --;
 			}
-			else if (i % 10 == 5 && bomb > 0) {
+			else if (i % 10 == 3 && bomb > 0) {
 				brick.SetBomb();
 				bomb --;
 			}

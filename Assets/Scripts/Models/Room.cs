@@ -9,6 +9,7 @@ public class Room : MonoBehaviour {
 	public delegate void RoomBallCallback(Ball ball);
 	public RoomBrickCallback brickDidHitHandler;
 	public RoomBallCallback ballDidResetHandler;
+    public RoomBallCallback ballDidDestroyHandler;
     public GameObject handTip;
     public HierarchyControl hControl;
     GameObject pointer;
@@ -42,7 +43,7 @@ public class Room : MonoBehaviour {
 	public void HitBrick(Brick brick) {
 		if (brickDidHitHandler != null) {
 			if (brick.isPowerup) {
-				if (Random.Range(0, 2) <= 1) {
+				if (Random.Range(0, 2) < 1) {
 					PowerUpBalls();
 					Invoke("ResetBalls", 10);
 				}
@@ -52,7 +53,14 @@ public class Room : MonoBehaviour {
 				}
 			}
 			else if (brick.isBomb) {
+                balls[0].GetComponent<AudioSource>().Play();
+                foreach(Ball ball in balls)
+                {
+                    ResetBall(ball);
+                    ballDidResetHandler(ball);
+                }
 				brick.wall.HitAllBricks();
+     
 			}
 			brickDidHitHandler();
 		}
@@ -60,7 +68,7 @@ public class Room : MonoBehaviour {
 
 	void PowerUpBalls() {
 		foreach(Ball ball in balls) {
-			ball.Zoom(5.0f);
+			ball.Zoom(2.0f);
 		}
 	}
 
@@ -82,6 +90,8 @@ public class Room : MonoBehaviour {
 	}
 
 	void RemoveBall() {
+        ballDidDestroyHandler(balls[balls.Length - 1]);
+
 		List<Ball> newBalls = new List<Ball>();
 		newBalls.AddRange(balls);
 		newBalls.RemoveAt(balls.Length - 1);

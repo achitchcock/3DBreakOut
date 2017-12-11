@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Kinect = Windows.Kinect;
+using UnityEngine.UI;
 
 
 public class HierarchyControl : MonoBehaviour {
@@ -13,7 +14,7 @@ public class HierarchyControl : MonoBehaviour {
     GameObject elbow;
     GameObject wrist;
     GameObject handTip;
-
+    public Text handstate;
     
 
     public NodePrimitive upperArm;
@@ -91,9 +92,9 @@ public class HierarchyControl : MonoBehaviour {
 
                 // set arm segment sizes
                 upperArm.transform.localScale = new Vector3(1,elbowPivot.transform.localPosition.magnitude/2,1);
-                upperArm.GetComponent<NodePrimitive>().Pivot.y = elbowPivot.transform.localPosition.magnitude / 4;
+                upperArm.GetComponent<NodePrimitive>().Pivot.y = elbowPivot.transform.localPosition.magnitude / 2;
                 foreArm.transform.localScale = new Vector3(1,wristPivot.transform.localPosition.magnitude/2, 1);
-                foreArm.GetComponent<NodePrimitive>().Pivot.y = wristPivot.transform.localPosition.magnitude / 4;
+                foreArm.GetComponent<NodePrimitive>().Pivot.y = wristPivot.transform.localPosition.magnitude / 2;
                 hand.transform.localScale = new Vector3(1, handPivot.transform.localPosition.magnitude/2, 1);
                 hand.GetComponent<NodePrimitive>().Pivot.y = handPivot.transform.localPosition.magnitude / 2;
 
@@ -108,7 +109,14 @@ public class HierarchyControl : MonoBehaviour {
                 //shoulderPivot.localRotation = rot;
 
                 //shoulderPivot.localRotation = // camera's rotation?
-                handOpen = body.HandRightState;
+                if (body.HandRightState == Kinect.HandState.Open || body.HandRightState == Kinect.HandState.Closed)
+                {
+                    handOpen = body.HandRightState;
+                    handstate.text = "Hand State: " + handOpen.ToString();
+                }
+                
+
+                
                 Kinect.Vector4 handDir = body.JointOrientations[Kinect.JointType.HandRight].Orientation;
                 dir = new Quaternion();
                 dir.x = handDir.X;
